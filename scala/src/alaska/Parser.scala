@@ -1,24 +1,16 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package alaska
 
 import scala.util.parsing.combinator.syntactical._
 
 object ExprParser extends StandardTokenParsers {
+  lexical.delimiters ++= List("+", "-", "*", "/", "(", ")")
 
-  lexical.delimiters ++= List("+", "-")
-
-  def expr = sum | term
-  def sum = add | sub
-  def add: Parser[Expr] = term ~ "+" ~ term ^^ { case lhs ~ _ ~ rhs =>
-      Add(lhs, rhs) }
-  def sub: Parser[Expr] = term ~ "-" ~ term ^^ { case lhs ~ _ ~ rhs =>
-      Sub(lhs, rhs) }
-  def term: Parser[Expr] = const | "(" ~> expr <~ ")"
-  def const = numericLit ^^ { s => Const(s.toInt) }
+  def expr = term*(
+      "+" ^^^ {(lhs, rhs) => Add(lhs, rhs)}
+    | "-" ^^^ {(lhs, rhs) => Sub(lhs, rhs)})
+  def term = factor
+  def factor: Parser[Expr] = const | "(" ~> expr <~ ")"
+  def const: Parser[Expr] = numericLit ^^ { s => Const(s.toInt) }
 
   def parse(s: String) = {
     val tokens = new lexical.Scanner(s)
