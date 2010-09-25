@@ -18,7 +18,8 @@ object Everest extends SimpleSwingApplication {
   case class FactoryMap(name: String, factory: VisitorFactory)
   val strategies = new ComboBox(List(
       FactoryMap("PostfixedPrinter", new PostfixedPrinterFactory),
-      FactoryMap("PrefixedPrinter", new PrefixedPrinterFactory))) {
+      FactoryMap("PrefixedPrinter", new PrefixedPrinterFactory),
+      FactoryMap("InfixedPrinter", new InfixedPrinterFactory))) {
       renderer = Renderer(_.name)
   }
   val resultLbl = new Label {

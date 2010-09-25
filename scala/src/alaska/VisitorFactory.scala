@@ -10,9 +10,13 @@ abstract class VisitorFactory {
 }
 
 class PostfixedPrinterFactory extends VisitorFactory {
-  override def createVisitor = new PostfixedPrinter
+  override def createVisitor() = new PostfixedPrinter
 }
 
 class PrefixedPrinterFactory extends VisitorFactory {
-  override def createVisitor = new PrefixedPrinter
+  override def createVisitor() = new PrefixedPrinter
+}
+
+class InfixedPrinterFactory extends VisitorFactory {
+  override def createVisitor() = new InfixedPrinter
 }

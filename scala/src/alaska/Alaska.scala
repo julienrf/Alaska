@@ -8,7 +8,7 @@ class Alaska(private var _visitorFactory: VisitorFactory) {
 
   def process(expr: Expr): String = {
     val visitor = visitorFactory.createVisitor
-    expr accept visitor
+    visitor process expr
     visitor.result
   }
 
