@@ -1,0 +1,23 @@
+Version haskell du projet alaska.
+
+Dépendances
+-----------
+
+* compilo haskell GHC
+* librairies de base
+* librairie parsec 
+
+Compilation
+-----------
+
+Depuis le dossier haskell :
+
+  cabal configure && cabal build
+
+Le build se retrouve dans dist/build/alaska/alaska
+
+
+Stats
+-----
+
+Décompte des lignes avec cloc.sh

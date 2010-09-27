@@ -1,0 +1,20 @@
+Name:                Alaska
+Version:             0.1
+Synopsis:            Une mini calto en Haskell
+License:             PublicDomain
+Author:              Paul
+Stability:           Highly stable, production ready !
+Category:            Maths
+Build-type:          Simple
+Cabal-version:       >=1.2
+
+Executable alaska
+  hs-source-dirs: src
+  main-is: main.hs
+
+  Build-depends:
+    base >= 4,
+    parsec
+
+  ghc-options: -O2 -Wall -funbox-strict-fields -threaded
+
