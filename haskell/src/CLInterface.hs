@@ -3,6 +3,7 @@ module CLInterface(runCLI) where
 import ExprParser (Expression(..), parseExpr)
 import ExprProcessor (eval, toPrefix, toInfix, toPostfix)
 import Control.Monad (when)
+import Data.List (find)
 
 type TransFix = Expression -> String
 
@@ -21,19 +22,15 @@ mainMenu ps = do
     putStrLn $ concat [" - Sa valeur est     ", show $ eval (expression s)]
     mainMenu s
 
-
 updateState :: UserState -> IO UserState
-updateState s = do
-  putStrLn $ unlines ["","Choisir une action",
-                      "[f] Régler le format de sortie",
-                      "[e] Saisir une expression",
-                      "[q] Quitter"]
-  getLine >>= \c ->  case c of
-    "f" -> getFix >>= \f -> return $ s { fixity = f }
-    "e" -> getExpr >>= \e ->  return $ s { expression = e }
-    "q" -> return $ s { playAgain = False }
-    _   -> updateState s
-  
+updateState s = ( createMenu
+                  "Choisir une action"
+                  [("f", "Régler le format de sortie", 
+                    getFix >>= \f -> return $ s { fixity = f }),
+                   ("e", "Saisir une expression",
+                    getExpr >>= \e ->  return $ s { expression = e }),
+                   ("q", "Quitter", return $ s { playAgain = False })] )
+                 
 
 getExpr :: IO Expression
 getExpr = putStrLn "Entrer l'expression : " >> getLine >>= \l -> 
@@ -42,12 +39,19 @@ getExpr = putStrLn "Entrer l'expression : " >> getLine >>= \l ->
     Left e -> (putStrLn $ show e) >> getExpr
 
 getFix :: IO TransFix
-getFix = (putStrLn $ unlines ["","Afficher en notation",
-                              "[<] prefix",
-                              "[.] infix",
-                              "[>] postfix"] ) >> 
-         getLine >>= \p -> case p of 
-           "<" -> return toPrefix
-           "." -> return toInfix
-           ">" -> return toPostfix
-           _   -> getFix
+getFix = ( createMenu 
+           "Choisir la notation pour l'affichage"
+           [("<", "Prefix", return toPrefix),
+            (".", "Infix",  return toInfix),
+            (">", "Postfix", return toPostfix)] )
+
+
+
+createMenu :: String -> [(String, String, IO a)] -> IO a
+createMenu title options = do 
+  putStrLn ""
+  putStrLn $ concat ["--- ", title]
+  putStrLn $ unlines $ map (\(k,l,_) -> concat ["[",k,"] ",l]) options
+  getLine >>= \c -> case (find (\(k,_,_) -> k == c) options) of
+    Just (_,_,a) -> a
+    Nothing      -> putStrLn "essaye encore ..." >> createMenu title options
