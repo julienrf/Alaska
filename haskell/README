@@ -5,7 +5,8 @@ Dépendances
 
 * compilo haskell GHC
 * librairies de base
-* librairie parsec 
+* librairie parsec
+* librairie snap-server
 
 Compilation
 -----------

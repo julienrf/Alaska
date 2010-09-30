@@ -14,7 +14,13 @@ Executable alaska
 
   Build-depends:
     base >= 4,
-    parsec
+    haskell98,
+    parsec,
+    bytestring,
+    monads-fd,
+    snap-core,
+    snap-server
 
   ghc-options: -O2 -Wall -funbox-strict-fields -threaded
 
+  Extensions: OverloadedStrings
