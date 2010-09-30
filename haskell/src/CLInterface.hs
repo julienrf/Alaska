@@ -11,6 +11,7 @@ data UserState = UserState { expression :: Expression,
                              fixity     :: TransFix, 
                              playAgain  :: Bool}
 
+runCLI :: IO ()
 runCLI = mainMenu baseState where
   baseState = UserState { expression = (Lit 0), fixity = toInfix, playAgain = True }
 

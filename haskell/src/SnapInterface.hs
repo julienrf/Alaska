@@ -7,8 +7,6 @@ import Control.Applicative ((<|>))
 
 import ExprParser (Expression(..), parseExpr)
 import ExprProcessor (eval, toPrefix, toInfix, toPostfix)
-import Control.Monad (when)
-import Data.List (find)
 
 type TransFix = Expression -> String
 
@@ -20,12 +18,12 @@ runSnapUI port = do
    router)
 
 
+router, showForm, handleForm :: Snap ()
 router = (method GET showForm) <|> (method POST handleForm)
 
-showForm :: Snap ()
 showForm = writeBS formContent
 
-handleForm :: Snap ()
+-- Attention, on est dans la snap monad
 handleForm = do
   me <- getParam "expression"
   mf <- getParam "fixity"
@@ -40,10 +38,10 @@ tryComputeRes me mf =
     Nothing -> Left "Expression is missing"
     Just e  -> case fmap fixity mf of
       Nothing -> Left "Fixity is missing"
-      Just mf -> case mf of
+      Just mf' -> case mf' of
         Nothing -> Left "Wrong fixity"
         Just f  -> case parseExpr (B.unpack e) of
-          Left e   -> Left $ concat ["Parse Error : ", show e]
+          Left err -> Left $ concat ["Parse Error : ", show err]
           Right pe -> Right $ concat ["L'expression est : ",f pe,"\n",
                                       "Sa valeur est : ", show $ eval pe]
         
