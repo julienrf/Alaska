@@ -12,10 +12,10 @@ import Data.List (find)
 
 type TransFix = Expression -> String
 
-runSnapUI :: IO ()
-runSnapUI = do
+runSnapUI :: Int -> IO ()
+runSnapUI port = do
   putStrLn "En écoute sur http://localhost:8000"
-  (httpServe "*" 8000 "Alaska Server"
+  (httpServe "*" port "Alaska Server"
    Nothing Nothing
    router)
 
@@ -29,24 +29,24 @@ handleForm :: Snap ()
 handleForm = do
   me <- getParam "expression"
   mf <- getParam "fixity"
-  writeBS $ case (computeRes me mf) of
-    Just s -> s
-    Nothing -> "Erreur dans le formulaire, essaye encore"
+  writeBS $ case (tryComputeRes me mf) of
+    Right s -> B.pack s
+    Left  e -> B.pack $ concat ["Erreur : ", show e]
 
-computeRes :: Maybe B.ByteString -> Maybe B.ByteString -> Maybe B.ByteString
-computeRes me mf = do
-  e   <- me
-  pe <- maybeExpr e
-  mtf <- fmap fixity mf
-  tf  <- mtf
-  return (B.pack $ concat ["L'expression est : ",tf pe,"\n",
-                           "Sa valeur est : ", show $ eval pe])
-  
-maybeExpr :: B.ByteString -> Maybe Expression
-maybeExpr e = case parseExpr (B.unpack e) of 
-  Right t -> Just t
-  Left _ ->  Nothing
-
+tryComputeRes :: Maybe B.ByteString -> Maybe B.ByteString 
+                 -> Either String String
+tryComputeRes me mf = 
+  case me of
+    Nothing -> Left "Expression is missing"
+    Just e  -> case fmap fixity mf of
+      Nothing -> Left "Fixity is missing"
+      Just mf -> case mf of
+        Nothing -> Left "Wrong fixity"
+        Just f  -> case parseExpr (B.unpack e) of
+          Left e   -> Left $ concat ["Parse Error : ", show e]
+          Right pe -> Right $ concat ["L'expression est : ",f pe,"\n",
+                                      "Sa valeur est : ", show $ eval pe]
+        
 fixity :: B.ByteString -> Maybe TransFix
 fixity f =  lookup f [("prefix", toPrefix),
                       ("infix", toInfix),
