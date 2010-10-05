@@ -2,8 +2,9 @@ import System (getArgs)
 import CLInterface (runCLI)
 import SnapInterface (runSnapUI)
 
+main :: IO ()
 main = getArgs >>= \a -> case a of
-  ("--web":_) -> runSnapUI
+  ("--web":p:_) -> runSnapUI (read p)
   ("--cli":_) -> runCLI
-  _           -> putStrLn "use --web or --cli"
+  _           -> putStrLn "use --web PORT  or  --cli"
 
