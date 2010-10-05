@@ -10,6 +10,8 @@ trait Logger extends ExprVisitor {
     expr match {
       case Add(lhs, rhs) => println("Addition")
       case Sub(lhs, rhs) => println("Soustraction")
+      case Mul(lhs, rhs) => println("Multiplication")
+      case Div(lhs, rhs) => println("Division")
       case Const(n) => println("Constante : " + n.toString)
     }
     super.process(expr)

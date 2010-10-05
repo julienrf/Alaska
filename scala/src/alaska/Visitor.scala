@@ -13,12 +13,10 @@ abstract class ExprVisitor() {
 class PostfixedPrinter extends ExprVisitor {
 
   override def process(expr: Expr): String = expr match {
-    case Add(lhs, rhs) => {
-        process(lhs) + " " + process(rhs) + " +"
-      }
-    case Sub(lhs, rhs) => {
-        process(lhs) + " " + process(rhs) + " -"
-      }
+    case Add(lhs, rhs) => process(lhs) + " " + process(rhs) + " +"
+    case Sub(lhs, rhs) => process(lhs) + " " + process(rhs) + " -"
+    case Mul(lhs, rhs) => process(lhs) + " " + process(rhs) + " *"
+    case Div(lhs, rhs) => process(lhs) + " " + process(rhs) + " /"
     case Const(n) => n.toString
   }
 }
@@ -30,24 +28,20 @@ class PostfixedPrinter extends ExprVisitor {
 class PrefixedPrinter extends ExprVisitor {
 
   override def process(expr: Expr): String = expr match {
-    case Add(lhs, rhs) => {
-        "+ " + process(lhs) + " " + process(rhs)
-      }
-    case Sub(lhs, rhs) => {
-        "- " + process(lhs) + " " + process(rhs)
-      }
+    case Add(lhs, rhs) => "+ " + process(lhs) + " " + process(rhs)
+    case Sub(lhs, rhs) => "- " + process(lhs) + " " + process(rhs)
+    case Mul(lhs, rhs) => "* " + process(lhs) + " " + process(rhs)
+    case Div(lhs, rhs) => "/ " + process(lhs) + " " + process(rhs)
     case Const(n) => n.toString
   }
 }
 
 class InfixedPrinter extends ExprVisitor {
   override def process(expr: Expr): String = expr match {
-    case Add(lhs, rhs) => {
-        "(" + process(lhs) + " + " + process(rhs) + ")"
-      }
-    case Sub(lhs, rhs) => {
-        "(" + process(lhs) + " - " + process(rhs) + ")"
-      }
+    case Add(lhs, rhs) => "(" + process(lhs) + " + " + process(rhs) + ")"
+    case Sub(lhs, rhs) => "(" + process(lhs) + " - " + process(rhs) + ")"
+    case Mul(lhs, rhs) => "(" + process(lhs) + " * " + process(rhs) + ")"
+    case Div(lhs, rhs) => "(" + process(lhs) + " / " + process(rhs) + ")"
     case Const(n) => n.toString
   }
 }

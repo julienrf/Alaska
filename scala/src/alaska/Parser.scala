@@ -8,7 +8,9 @@ object ExprParser extends StandardTokenParsers {
   def expr = term*(
       "+" ^^^ {(lhs, rhs) => Add(lhs, rhs)}
     | "-" ^^^ {(lhs, rhs) => Sub(lhs, rhs)})
-  def term = factor
+  def term = factor*(
+      "*" ^^^ {(lhs, rhs) => Mul(lhs, rhs)}
+    | "/" ^^^ {(lhs, rhs) => Div(lhs, rhs)})
   def factor: Parser[Expr] = const | "(" ~> expr <~ ")"
   def const: Parser[Expr] = numericLit ^^ { s => Const(s.toInt) }
 
