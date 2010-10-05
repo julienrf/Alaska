@@ -3,10 +3,7 @@ package alaska
 /** ExpressionVisitor interface */
 abstract class ExprVisitor() {
 
-  def process(expr: Expr): Unit
-
-  protected val out: StringBuffer = new StringBuffer
-  def result: String = out.toString
+  def process(expr: Expr): String
 }
 
 /**
@@ -15,20 +12,14 @@ abstract class ExprVisitor() {
  */
 class PostfixedPrinter extends ExprVisitor {
 
-  override def process(expr: Expr): Unit = expr match {
+  override def process(expr: Expr): String = expr match {
     case Add(lhs, rhs) => {
-        process(lhs)
-        out append " "
-        process(rhs)
-        out append " +"
+        process(lhs) + " " + process(rhs) + " +"
       }
     case Sub(lhs, rhs) => {
-        process(lhs)
-        out append " "
-        process(rhs)
-        out append " -"
+        process(lhs) + " " + process(rhs) + " -"
       }
-    case Const(n) => out append n.toString
+    case Const(n) => n.toString
   }
 }
 
@@ -38,39 +29,25 @@ class PostfixedPrinter extends ExprVisitor {
  */
 class PrefixedPrinter extends ExprVisitor {
 
-  override def process(expr: Expr): Unit = expr match {
+  override def process(expr: Expr): String = expr match {
     case Add(lhs, rhs) => {
-        out append "+ "
-        process(lhs)
-        out append " "
-        process(rhs)
+        "+ " + process(lhs) + " " + process(rhs)
       }
     case Sub(lhs, rhs) => {
-        out append "- "
-        process(lhs)
-        out append " "
-        process(rhs)
+        "- " + process(lhs) + " " + process(rhs)
       }
-    case Const(n) => out append n.toString
+    case Const(n) => n.toString
   }
 }
 
 class InfixedPrinter extends ExprVisitor {
-  override def process(expr: Expr): Unit = expr match {
+  override def process(expr: Expr): String = expr match {
     case Add(lhs, rhs) => {
-        out append "("
-        process(lhs)
-        out append " + "
-        process(rhs)
-        out append ")"
+        "(" + process(lhs) + " + " + process(rhs) + ")"
       }
     case Sub(lhs, rhs) => {
-        out append "("
-        process(lhs)
-        out append " - "
-        process(rhs)
-        out append ")"
+        "(" + process(lhs) + " - " + process(rhs) + ")"
       }
-    case Const(n) => out append n.toString
+    case Const(n) => n.toString
   }
 }

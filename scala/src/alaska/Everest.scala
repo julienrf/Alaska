@@ -9,17 +9,17 @@ import swing.event._
  */
 object Everest extends SimpleSwingApplication {
 
-  val alaska = new Alaska(new PostfixedPrinterFactory)
+  val alaska = new Alaska(new PostfixedPrinter with Logger)
   
   val inputField = new TextField {
     columns = 10
   }
 
-  case class FactoryMap(name: String, factory: VisitorFactory)
+  case class FactoryMap(name: String, visitor: ExprVisitor)
   val strategies = new ComboBox(List(
-      FactoryMap("PostfixedPrinter", new PostfixedPrinterFactory),
-      FactoryMap("PrefixedPrinter", new PrefixedPrinterFactory),
-      FactoryMap("InfixedPrinter", new InfixedPrinterFactory))) {
+      FactoryMap("PostfixedPrinter", new PostfixedPrinter with Logger),
+      FactoryMap("PrefixedPrinter", new PrefixedPrinter with Logger),
+      FactoryMap("InfixedPrinter", new InfixedPrinter with Logger))) {
       renderer = Renderer(_.name)
   }
   val resultLbl = new Label {
@@ -41,7 +41,7 @@ object Everest extends SimpleSwingApplication {
   }
 
   def changeStrategy(): Unit = {
-    alaska.visitorFactory = strategies.selection.item.factory
+    alaska.visitor = strategies.selection.item.visitor
     updateResult()
   }
 
